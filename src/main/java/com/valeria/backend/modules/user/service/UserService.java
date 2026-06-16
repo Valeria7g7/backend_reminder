@@ -5,10 +5,12 @@ import com.valeria.backend.modules.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserService {
-
 	private final UserRepository repository;
 	public UserService(UserRepository repository) {
 		this.repository=repository;
@@ -17,6 +19,10 @@ public class UserService {
 		return repository.findAll(pageable);
 	}
 	public User save(User user) {
+		
+		BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+		String passwordHash= encoder.encode(user.getPassword());
+		user.setPassword(passwordHash);
 		return repository.save(user);
 	}
 	public User update(Long id,User user) {
@@ -35,8 +41,12 @@ public class UserService {
 		repository.deleteById(id);
 		
 	}
+	public Optional<User> findUser(String email) {
+		return repository.findByEmail(email);
+	}
 	
 //	public List<User> getAllUsers(){
 //	return repository.findAll();
 //}
+
 }

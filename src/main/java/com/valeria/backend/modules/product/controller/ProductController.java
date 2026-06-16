@@ -36,6 +36,7 @@ public class ProductController  {
 //	    }
 	  @PostMapping("/search")
 	    public PaginatedResponse<Product> getProducts(Pageable pageable, HttpServletRequest request) {
+		  System.out.println("Buscando producys ");
 	        Page<Product> page = service.getAllProducts(pageable);
 	        return PaginationMapper.map( page, request);
 	    }
