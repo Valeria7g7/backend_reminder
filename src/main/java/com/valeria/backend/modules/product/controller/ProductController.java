@@ -1,4 +1,5 @@
 package com.valeria.backend.modules.product.controller;
+import com.valeria.backend.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
@@ -18,6 +19,7 @@ import com.valeria.backend.response.PaginationMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.PageRequest;
 //endpoints
 @RestController
 @RequestMapping("/api/product")
@@ -27,29 +29,25 @@ public class ProductController  {
 	 public ProductController(ProductService service) {
 		 this.service=service;
 	 }
-	 //@GetMapping("/api/product/getProducts")
-//	 @PostMapping("/search")
-//	    public List<Product> getProducts() {
-//		 System.out.println("valeriay");
-//		// System.out.println("consultando productos7667676767");
-//		 return service.getAllProducts();
-//	    }
+
 	  @PostMapping("/search")
-	    public PaginatedResponse<Product> getProducts(Pageable pageable, HttpServletRequest request) {
-		  System.out.println("Buscando producys ");
-	        Page<Product> page = service.getAllProducts(pageable);
-	        return PaginationMapper.map( page, request);
+	    public PaginatedResponse<Product> getProducts(@RequestBody SearchRequest request, HttpServletRequest httpRequest) {
+	       Pageable pageable=PageRequest.of(request.getPage()-1,request.getLimit());
+	       Page<Product> page=service.getAllProducts(pageable,request);
+	       return PaginationMapper.map( page, httpRequest);
 	    }
 	 @PostMapping//("/")
 	 public ResponseEntity<?> save(@RequestBody Product product) {
 		 try {
 		 System.out.println("producto request "+product.getName());
+		 Product pp=new Product();
+		 
 		  product = this.service.save(product);
 		// ProductResponse response=new ProductResponse(product);
 		 return ResponseEntity.ok(new ApiResponse<>(product));
 		 
 		 }catch(Exception e) {
-			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					 .body(e.getMessage());
 			 
 		 }

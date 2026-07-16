@@ -38,7 +38,7 @@ public class UserController {
 		 if (request.getSearch() != null) {
 		     value = request.getSearch().getValue();
 		 }
-		 System.out.println("value envido "+value);
+		 //System.out.println("value envido "+value);
 		    Page<User> page = service.getAllUsers(
 		            pageable,
 		            value);

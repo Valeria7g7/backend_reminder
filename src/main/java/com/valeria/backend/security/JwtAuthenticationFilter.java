@@ -55,30 +55,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     			path.startsWith("/api/auth/login") ||
     	    path.startsWith("/api/auth/register")) {
     	    filterChain.doFilter(request, response);
-        	System.out.println("ignorando esta ruta " );
 
     	    return;
     	}
-    	System.out.println("Aqui no debe pasar login"+request);
-    	System.out.println("URI: " + request.getRequestURI());
-    	System.out.println("METHOD: " + request.getMethod());
+    	
     	
     	try {    	
         final String authHeader =
                 request.getHeader("Authorization");
-        System.out.println("authHeader obtenido: "+authHeader);
         //if( authHeader==null|| !authHeader.startsWith("Bearer ")) throw new RuntimeException("Usuario no encontrado");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 
             filterChain.doFilter(request, response);
-            System.out.println("no se recibio token bearer");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String token = authHeader.substring(7);
-        System.out.println("token obtenido: "+token);
 
         String email =jwtService.extractEmail(token);
         if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
