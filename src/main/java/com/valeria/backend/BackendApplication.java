@@ -2,7 +2,6 @@ package com.valeria.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 //@SpringBootApplication
 @SpringBootApplication(scanBasePackages = "com.valeria.backend")
 public class BackendApplication {

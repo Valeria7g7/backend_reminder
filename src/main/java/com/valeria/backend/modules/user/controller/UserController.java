@@ -1,5 +1,6 @@
 package com.valeria.backend.modules.user.controller;
 import com.valeria.backend.modules.user.service.UserService;
+import com.valeria.backend.dto.*;
 import com.valeria.backend.dto.ApiResponse;
 import com.valeria.backend.response.PaginatedResponse;
 import com.valeria.backend.response.PaginationMapper;
@@ -15,6 +16,7 @@ import com.valeria.backend.modules.user.model.User;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.valeria.backend.modules.auth.service.AuthService;
+import org.springframework.data.domain.PageRequest;
 @RestController
 //@RestControllerAdvice//esta clase centralizada intercepta el error y le asigna el código HTTP correcto.
 @RequestMapping("/api/users")
@@ -27,11 +29,25 @@ public class UserController {
 	}
 	
 	@PostMapping("/search")
-	public PaginatedResponse<User> getUsers(Pageable pageable,HttpServletRequest request){
-		Page<User> page=service.getAllUsers(pageable);
-		System.out.println("page ");
-		System.out.println(page);
-		return PaginationMapper.map(page, request);
+	public PaginatedResponse<User> getUsers(@RequestBody SearchRequest request,HttpServletRequest httpRequest){
+		 Pageable pageable = PageRequest.of(
+		            request.getPage() - 1,
+		            request.getLimit());
+		 String value = null;
+
+		 if (request.getSearch() != null) {
+		     value = request.getSearch().getValue();
+		 }
+		 //System.out.println("value envido "+value);
+		    Page<User> page = service.getAllUsers(
+		            pageable,
+		            value);
+
+		    return PaginationMapper.map(page, httpRequest);
+//		Page<User> page=service.getAllUsers(pageable);
+//		System.out.println("page ");
+//		System.out.println(page);
+//		return PaginationMapper.map(page, request);
 		
 	}
 	 @PostMapping
@@ -39,12 +55,6 @@ public class UserController {
 		 try {
 		System.out.println("guardadno user"+user.getName());
 		  user = this.service.save(user);
-//		 if(user.getAccountOwner()) {
-//			 String token=authService.generateToken(user.getId(), user.getEmail());
-//			 AuthResponse response=new AuthResponse(user,token);
-//		        return ResponseEntity.ok(new ApiResponse<>(response));
-//		 }
-		// ProductResponse response=new ProductResponse(product);
 		 return ResponseEntity.ok(new ApiResponse<>(user));
 		 
 		 }catch(Exception e) {

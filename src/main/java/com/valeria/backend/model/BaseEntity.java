@@ -1,13 +1,15 @@
 package com.valeria.backend.model;
 import java.time.LocalDateTime;
+import lombok.Data;
 import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.Column;
-import lombok.Getter;
-import lombok.Setter;
-@Getter
-@Setter
+//import lombok.Getter;
+//import lombok.Setter;
+//@Getter
+//@Setter
+@Data
 @MappedSuperclass
 public abstract class BaseEntity {
 	@CreationTimestamp

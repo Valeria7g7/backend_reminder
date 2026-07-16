@@ -8,15 +8,29 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
+import org.springframework.data.jpa.domain.Specification;
 @Service
 public class UserService {
 	private final UserRepository repository;
 	public UserService(UserRepository repository) {
 		this.repository=repository;
 	}
-	public Page<User> getAllUsers(Pageable pageable){
-		return repository.findAll(pageable);
+	//@SuppressWarnings("null")
+	public Page<User> getAllUsers(Pageable pageable,String value){
+		//return repository.findAll(pageable);
+		//Specification<User> spec = null;
+		Specification<User> spec =
+		        (root, query, cb) -> cb.conjunction();
+		    if (value != null && !value.isBlank()) {
+		        spec = spec.and((root, query, cb) ->
+		                cb.or(
+		                        cb.like(cb.lower(root.get("name")), "%" + value.toLowerCase() + "%"),
+		                        cb.like(cb.lower(root.get("email")), "%" + value.toLowerCase() + "%"),
+		                        cb.like(cb.lower(root.get("phone")), "%" + value.toLowerCase() + "%")
+		                ));
+		    }
+
+		    return repository.findAll(spec, pageable);
 	}
 	public User save(User user) {
 		

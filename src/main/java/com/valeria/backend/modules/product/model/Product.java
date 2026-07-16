@@ -1,5 +1,7 @@
 package com.valeria.backend.modules.product.model;
-
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 //import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,17 +11,16 @@ import org.hibernate.annotations.SQLRestriction;
 import java.math.BigDecimal;
 import jakarta.persistence.*;
 //Representa una tabla
+//@Getter
+//@Setter
 @Entity
 @Table(name = "product")
 @SQLDelete(sql = "UPDATE product SET deleted_at = SYSTIMESTAMP WHERE id=?")
 @SQLRestriction("deleted_at IS NULL")
+//@Data
 public class Product extends BaseEntity {
-    //@Id
-	//private UUID id;
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)//genera el id automaticamente
-  // @GeneratedValue
-   // private UUID id;
     private Long id;
 	private String name;
     private String description;
@@ -43,10 +44,13 @@ public class Product extends BaseEntity {
     public void setPrice(BigDecimal price) {
     	this.price=price;
     }
-    // getters
     public Number getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
     public BigDecimal getPrice() { return price; }
+	public void setId(Long id) {
+		this.id = id;
+	}
+    
    // public LocalDateTime getCreatedAt() { return createdAt; }
 }
